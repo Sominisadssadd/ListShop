@@ -1,42 +1,61 @@
 package com.example.listshop.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.listshop.domain.ShopItem
 import com.example.listshop.domain.ShopListRepository
 
 object ShopListRepositoryImpl : ShopListRepository {
 
-    private val shopList = mutableListOf<ShopItem>()
+    private val shopList = MutableLiveData<List<ShopItem>>()
+    private val mutableShopList = mutableListOf<ShopItem>()
+
+
+
+    init {
+        for(i in 0 until 100){
+            val item = ShopItem("some stuff $i", i, true)
+            addShopListItem(item)
+        }
+    }
 
     private var autoIncrementId = 0
+
+    private fun updateShopList() {
+        shopList.value = mutableShopList.toList()
+    }
 
     override fun addShopListItem(shopItem: ShopItem) {
 
         if (shopItem.id == ShopItem.UNDEFINED_ID) {
             shopItem.id = autoIncrementId++
         }
-        shopList.add(shopItem)
+        mutableShopList.add(shopItem)
+        updateShopList()
     }
 
     override fun editShopListItem(shopItem: ShopItem) {
         val oldShopItem = getShopListItem(shopItem.id)
-        shopList.remove(oldShopItem)
+        mutableShopList.remove(oldShopItem)
         addShopListItem(shopItem)
+        updateShopList()
     }
 
     override fun removeShopListItem(shopItem: ShopItem) {
-        shopList.remove(shopItem)
+        mutableShopList.remove(shopItem)
+        updateShopList()
     }
 
     override fun getShopListItem(id: Int): ShopItem {
 
         //можно сделать возвращаемый тип нулабельным, либо просто бросить исключение
-        return shopList.find { it.id == id }
+        return mutableShopList.find { it.id == id }
             ?: throw RuntimeException("element with $id id not founded")
+
     }
 
 
-    override fun getShopList(): List<ShopItem> {
-        //возвращаем копию листа, чтобы нельзя было работать с оригиналом
-        return shopList.toList()
+    override fun getShopList(): LiveData<List<ShopItem>> {
+        return shopList
     }
 }
