@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
 
     fun changeEnabledState(shopItem: ShopItem) {
         var oldElement = shopItem.copy(enabled = !shopItem.enabled)
-        editShopItemUseCase.editShopItem(shopItem)
+        editShopItemUseCase.editShopItem(oldElement)
     }
 
     fun removeShopItem(shopItem: ShopItem) {
