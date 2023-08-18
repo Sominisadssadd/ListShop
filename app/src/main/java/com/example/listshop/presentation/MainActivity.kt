@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
             recAdapter.submitList(it)
         }
 
-
     }
 
     private fun setupRecyclerView() {
