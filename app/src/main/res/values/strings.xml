@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">List shop</string>
     <string name="floating_action_description">Add shop item</string>
+
+    <string name="text_for_button_in_shop_activity">Save</string>
+    <string name="button_save_description">Save changes or add new ShopItem</string>
+
+    <string name="product_edit_text_hint">Product</string>
+    <string name="count_of_product_edit_text_hint">Count</string>
+
+
 </resources>
