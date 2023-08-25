@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
-
+            
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,14 +23,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        setupRecyclerViiew()
+        setupRecyclerView()
         viewModel.getShopList().observe(this) {
             recAdapter.submitList(it)
         }
 
     }
 
-    private fun setupRecyclerViiew() {
+    private fun setupRecyclerView() {
         recAdapter = ListShopRecyclerView()
         recyclerView = findViewById(R.id.mainRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
