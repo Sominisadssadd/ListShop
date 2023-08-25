@@ -1,6 +1,5 @@
 package com.example.listshop.presentation
 
-import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +8,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
-import com.example.listshop.domain.ShopItem
-import com.example.listshop.domain.UseCaseAddShopItem
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,14 +23,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        setupRecyclerView()
+        setupRecyclerViiew()
         viewModel.getShopList().observe(this) {
             recAdapter.submitList(it)
         }
 
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerViiew() {
         recAdapter = ListShopRecyclerView()
         recyclerView = findViewById(R.id.mainRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
