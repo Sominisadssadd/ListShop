@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
-            
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,18 +17,24 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var recAdapter: ListShopRecyclerView
+    private lateinit var buttonAdd: FloatingActionButton
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        buttonAdd = findViewById(R.id.addShopItemButton)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setupRecyclerView()
         viewModel.getShopList().observe(this) {
             recAdapter.submitList(it)
         }
 
+        buttonAdd.setOnClickListener {
+            val intentADD = ShopItemActivity.newIntentAdd(this@MainActivity)
+            startActivity(intentADD)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -59,7 +66,8 @@ class MainActivity : AppCompatActivity() {
                 viewModel.changeEnabledState(it)
             }
             OnShopItemClikcListener = {
-                Log.d(TAG, it.toString())
+                val intentED = ShopItemActivity.newIntentEdit(this@MainActivity, it.id)
+                startActivity(intentED)
             }
             onShopItemSwipeAndDelete = {
                 viewModel.removeShopItem(it)
@@ -67,7 +75,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private const val TAG = "MAINACTIVITY"
-    }
+
 }
