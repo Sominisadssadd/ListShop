@@ -8,5 +8,8 @@
     <string name="product_edit_text_hint">Product</string>
     <string name="count_of_product_edit_text_hint">Count</string>
 
+    <string name="error_name_of_product_IL">Input name of product</string>
+    <string name="error_name_of_count_IL">Input count of product</string>
+
 
 </resources>
