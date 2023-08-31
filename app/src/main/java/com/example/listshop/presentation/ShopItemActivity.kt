@@ -14,16 +14,11 @@ import com.example.listshop.R
 import com.example.listshop.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
 
-    private lateinit var buttonSave: Button
-    private lateinit var textIL1: TextInputLayout
-    private lateinit var textIL2: TextInputLayout
-    private lateinit var EDtext1: EditText
-    private lateinit var EDtext2: EditText
+
     private var screenMode = UNDEFINED_SCREEN_MODE
     private var shopItemID = UNDEFINED_SHOP_ITEM_ID
-    private lateinit var viewModel: ShopItemActivityViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,94 +26,17 @@ class ShopItemActivity : AppCompatActivity() {
         setContentView(R.layout.activity_shop_item)
 
         parseIntent()
-        viewModel = ViewModelProvider(this)[ShopItemActivityViewModel::class.java]
-        initViews()
-        when (screenMode) {
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
 
+        val fragment = when (screenMode) {
+            MODE_EDIT -> ShopItemFragment.newFragmentEdit(shopItemID)
+            MODE_ADD -> ShopItemFragment.newFragmentAdd()
+            else -> throw RuntimeException("Params screen mode is absent")
         }
-        observableEvents()
-
-    }
-
-    private fun launchEditMode() {
-        val shopItem = viewModel.getShopItem(shopItemID)
-        EDtext1.setText(shopItem.name)
-        EDtext2.setText(shopItem.count.toString())
-        buttonSave.setOnClickListener {
-            viewModel.editShopItem(
-                shopItemID,
-                EDtext1.text.toString(),
-                EDtext2.text.toString()
-            )
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit()
         }
-    }
-
-    private fun launchAddMode() {
-        buttonSave.setOnClickListener {
-            val name = EDtext1.text.toString()
-            val count = EDtext2.text.toString()
-            viewModel.addShopItem(name, count)
-        }
-    }
-
-    private fun observableEvents() {
-
-        viewModel.errorName.observe(this) {
-            if (it) {
-                textIL1.error = getString(R.string.error_name_of_product_IL)
-            }else{
-                textIL1.error = null
-            }
-
-        }
-        viewModel.errorCount.observe(this) {
-            if (it) {
-                textIL2.error = getString(R.string.error_name_of_count_IL)
-            }else{
-                textIL2.error = null
-            }
-        }
-        viewModel.shouldClose.observe(this) {
-            finish()
-        }
-
-        EDtext1.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetName()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
-
-        EDtext2.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetCount()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-        })
-
-    }
-
-    private fun initViews() {
-        buttonSave = findViewById(R.id.buttonSave)
-        textIL1 = findViewById(R.id.text_il1)
-        textIL2 = findViewById(R.id.text_il2)
-        EDtext1 = findViewById(R.id.EDtext_1)
-        EDtext2 = findViewById(R.id.EDtext_2)
     }
 
     private fun parseIntent() {
@@ -138,9 +56,13 @@ class ShopItemActivity : AppCompatActivity() {
             if (!intent.hasExtra(EXTRA_SHOP_ITEM_ARG)) {
                 throw RuntimeException("ShopItem is absent")
             }
-            shopItemID = intent.getIntExtra(EXTRA_SHOP_ITEM_ARG, UNDEFINED_SHOP_ITEM_ID)
+            shopItemID = intent.getIntExtra(
+                EXTRA_SHOP_ITEM_ARG,
+                UNDEFINED_SHOP_ITEM_ID
+            )
         }
     }
+
 
     companion object {
         private const val UNDEFINED_SCREEN_MODE = ""
@@ -162,5 +84,10 @@ class ShopItemActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_SHOP_ITEM_ARG, shopItemID)
             return intent
         }
+    }
+
+    override fun finishedListener() {
+        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+        finish()
     }
 }
