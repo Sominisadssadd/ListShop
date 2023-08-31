@@ -3,6 +3,8 @@ package com.example.listshop.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,13 +13,14 @@ import com.example.listshop.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
 
 
     private lateinit var viewModel: MainViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var recAdapter: ListShopRecyclerView
     private lateinit var buttonAdd: FloatingActionButton
+    private var fragmentContainerView: FragmentContainerView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,17 +28,39 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         buttonAdd = findViewById(R.id.addShopItemButton)
+        fragmentContainerView = findViewById(R.id.fragmentContainerL)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
         setupRecyclerView()
+
+
         viewModel.getShopList().observe(this) {
             recAdapter.submitList(it)
         }
 
+
         buttonAdd.setOnClickListener {
-            val intentADD = ShopItemActivity.newIntentAdd(this@MainActivity)
-            startActivity(intentADD)
+            if (fragmentContainerView != null) {
+                launchShopItemFragment(ShopItemFragment.newFragmentAdd())
+            } else {
+                val intentADD = ShopItemActivity.newIntentAdd(this@MainActivity)
+                startActivity(intentADD)
+
+            }
         }
     }
+
+
+    private fun launchShopItemFragment(shopItemFragment: ShopItemFragment) {
+        //popBackStack удаляет последний фрагмент из стека
+        supportFragmentManager.popBackStack()
+        supportFragmentManager.beginTransaction()
+            //если мы будем использовать add и переворачивать экран, то фаргменты просто будут добавляться в контейнер
+            .replace(R.id.fragmentContainerL, shopItemFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 
     private fun setupRecyclerView() {
         recAdapter = ListShopRecyclerView()
@@ -65,14 +90,23 @@ class MainActivity : AppCompatActivity() {
             ONShopItemLongClickListener = {
                 viewModel.changeEnabledState(it)
             }
-            OnShopItemClikcListener = {
-                val intentED = ShopItemActivity.newIntentEdit(this@MainActivity, it.id)
-                startActivity(intentED)
+            OnShopItemClikcListener = { it ->
+                if (fragmentContainerView != null) {
+                    launchShopItemFragment(ShopItemFragment.newFragmentEdit(it.id))
+                } else {
+                    val intentED = ShopItemActivity.newIntentEdit(this@MainActivity, it.id)
+                    startActivity(intentED)
+                }
             }
             onShopItemSwipeAndDelete = {
                 viewModel.removeShopItem(it)
             }
         }
+    }
+
+    override fun finishedListener() {
+        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+        supportFragmentManager.popBackStack()
     }
 
 
