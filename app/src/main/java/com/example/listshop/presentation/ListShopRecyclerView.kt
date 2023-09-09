@@ -6,14 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
+import com.example.listshop.databinding.AbleItemBinding
+import com.example.listshop.databinding.DisableItemBinding
 import com.example.listshop.domain.ShopItem
 
 
-class ListShopRecyclerView : ListAdapter<ShopItem,ListShopRecyclerView.ListShopViewHolder>(ShopListDiffCallBack()) {
+class ListShopRecyclerView :
+    ListAdapter<ShopItem, ListShopRecyclerView.ListShopViewHolder>(ShopListDiffCallBack()) {
 
 //    var listShop = listOf<ShopItem>()
 //        set(value) {
@@ -30,11 +35,9 @@ class ListShopRecyclerView : ListAdapter<ShopItem,ListShopRecyclerView.ListShopV
     var onShopItemSwipeAndDelete: ((ShopItem) -> Unit)? = null
 
 
+    inner class ListShopViewHolder(val binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    inner class ListShopViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName = view.findViewById<TextView>(R.id.textViewName)
-        val tvCount = view.findViewById<TextView>(R.id.textViewCount)
-        val cardView = view.findViewById<CardView>(R.id.cardViewShopItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListShopViewHolder {
@@ -44,7 +47,9 @@ class ListShopRecyclerView : ListAdapter<ShopItem,ListShopRecyclerView.ListShopV
             else -> throw RuntimeException("unknown ViewType $viewType")
         }
 
-        val view = LayoutInflater.from(parent.context).inflate(
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = DataBindingUtil.inflate<ViewDataBinding>(
+            layoutInflater,
             layoutId,
             parent,
             false
@@ -60,19 +65,24 @@ class ListShopRecyclerView : ListAdapter<ShopItem,ListShopRecyclerView.ListShopV
         }
     }
 
-
     override fun onBindViewHolder(holder: ListShopViewHolder, position: Int) {
 
-        with(holder) {
-            tvName.text = getItem(position).name
-            tvCount.text = getItem(position).count.toString()
-            cardView.setOnLongClickListener {
+        val binding = holder.binding
+        val item = getItem(position)
+        with(binding) {
+
+            root.setOnLongClickListener {
                 ONShopItemLongClickListener?.invoke(getItem(position))
                 true
             }
-            cardView.setOnClickListener {
+            root.setOnClickListener {
                 OnShopItemClikcListener?.invoke(getItem(position))
             }
+        }
+        when (binding) {
+            is AbleItemBinding -> binding.shopItem = item
+            is DisableItemBinding -> binding.shopItem = item
+            else -> throw RuntimeException("Unknown ViewDataBinding type")
         }
     }
 

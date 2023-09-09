@@ -1,50 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_il1"
+<layout>
+
+    <data>
+
+        <variable
+            name="shopItem"
+            type="com.example.listshop.domain.ShopItem" />
+
+        <variable
+            name="viewModel"
+            type="com.example.listshop.presentation.ShopItemActivityViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/text_il2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/EDtext_1"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_il1"
+            getErrorByChangedName="@{viewModel.errorName}"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/product_edit_text_hint"
-            />
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/text_il2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/EDtext_1"
+                onChangeListener="@{()->viewModel.resetName()}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/product_edit_text_hint"
+                android:text="@{shopItem.name}" />
 
 
-    </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_il2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/buttonSave"
-        app:layout_constraintTop_toBottomOf="@id/text_il1">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/EDtext_2"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_il2"
+            getErrorByChangedCount="@{viewModel.errorCount}"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/count_of_product_edit_text_hint"
-            />
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/buttonSave"
+            app:layout_constraintTop_toBottomOf="@id/text_il1">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/EDtext_2"
+                getConvertedFromIntToStringText="@{shopItem.count}"
+                onChangeListener="@{()->viewModel.resetCount()}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/count_of_product_edit_text_hint" />
 
-    <Button
-        android:id="@+id/buttonSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/button_save_description"
-        android:text="@string/text_for_button_in_shop_activity"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/button_save_description"
+            android:text="@string/text_for_button_in_shop_activity"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
