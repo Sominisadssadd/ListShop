@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
+import com.example.listshop.databinding.ActivityMainBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -19,16 +20,14 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var recAdapter: ListShopRecyclerView
-    private lateinit var buttonAdd: FloatingActionButton
-    private var fragmentContainerView: FragmentContainerView? = null
+    private lateinit var binding: ActivityMainBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        buttonAdd = findViewById(R.id.addShopItemButton)
-        fragmentContainerView = findViewById(R.id.fragmentContainerL)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         setupRecyclerView()
@@ -39,8 +38,8 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
         }
 
 
-        buttonAdd.setOnClickListener {
-            if (fragmentContainerView != null) {
+        binding.addShopItemButton.setOnClickListener {
+            if (binding.fragmentContainerL != null) {
                 launchShopItemFragment(ShopItemFragment.newFragmentAdd())
             } else {
                 val intentADD = ShopItemActivity.newIntentAdd(this@MainActivity)
@@ -91,7 +90,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
                 viewModel.changeEnabledState(it)
             }
             OnShopItemClikcListener = { it ->
-                if (fragmentContainerView != null) {
+                if (binding.fragmentContainerL != null) {
                     launchShopItemFragment(ShopItemFragment.newFragmentEdit(it.id))
                 } else {
                     val intentED = ShopItemActivity.newIntentEdit(this@MainActivity, it.id)
