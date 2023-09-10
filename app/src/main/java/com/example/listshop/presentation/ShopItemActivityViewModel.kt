@@ -1,18 +1,18 @@
 package com.example.listshop.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
 import com.example.listshop.data.ShopListRepositoryImpl
 import com.example.listshop.domain.ShopItem
 import com.example.listshop.domain.UseCaseAddShopItem
 import com.example.listshop.domain.UseCaseEditShopItem
 import com.example.listshop.domain.UseCaseGetShopItem
+import kotlinx.coroutines.*
 import java.lang.Exception
 
-class ShopItemActivityViewModel : ViewModel() {
+class ShopItemActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    val repository = ShopListRepositoryImpl
+    val repository = ShopListRepositoryImpl(application)
 
     val addShopItem = UseCaseAddShopItem(repository)
     val editShopItem = UseCaseEditShopItem(repository)
@@ -31,20 +31,33 @@ class ShopItemActivityViewModel : ViewModel() {
     val shouldClose: LiveData<Unit>
         get() = _shouldClose
 
+
+    private val _shopItem = MutableLiveData<ShopItem>()
+    val shopitem: LiveData<ShopItem>
+        get() = _shopItem
+
+
     fun editShopItem(idOfOldShoptemElement: Int, name: String?, count: String?) {
 
         val pName = parseName(name)
         val pCount = parseCount(count)
         val valField = validateField(pName, pCount)
         if (valField) {
-            val newSI = getShopItem(idOfOldShoptemElement).copy(name = pName, count = pCount)
-            editShopItem.editShopItem(newSI)
-            _shouldClose.value = Unit
+            shopitem.value?.let {
+                viewModelScope.launch {
+                    val newSI = it.copy(name = pName, count = pCount)
+                    editShopItem.editShopItem(newSI)
+                    _shouldClose.value = Unit
+                }
+            }
         }
     }
 
-    fun getShopItem(shopItemId: Int): ShopItem {
-        return getShopItem.getShopItem(shopItemId)
+    fun getShopItem(shopItemId: Int) {
+        viewModelScope.launch {
+            val shopItem = getShopItem.getShopItem(shopItemId)
+            _shopItem.value = shopItem
+        }
     }
 
 
@@ -54,8 +67,10 @@ class ShopItemActivityViewModel : ViewModel() {
         val vFields = validateField(pName, pCount)
         if (vFields) {
             val shopItem = ShopItem(pName, pCount, true)
-            addShopItem.addShopItem(shopItem)
-            _shouldClose.value = Unit
+            viewModelScope.launch {
+                addShopItem.addShopItem(shopItem)
+                _shouldClose.value = Unit
+            }
         }
     }
 
@@ -91,6 +106,5 @@ class ShopItemActivityViewModel : ViewModel() {
     fun resetCount() {
         _errorCount.value = false
     }
-
 
 }
