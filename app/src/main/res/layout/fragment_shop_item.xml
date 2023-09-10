@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
 
     <data>
 
         <variable
             name="shopItem"
             type="com.example.listshop.domain.ShopItem" />
+
         <variable
             name="viewModel"
             type="com.example.listshop.presentation.ShopItemActivityViewModel" />
@@ -18,9 +18,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_il1"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             getErrorByChangedName="@{viewModel.errorName}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/text_il2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed">
@@ -32,6 +35,7 @@
                 onChangeListener="@{()->viewModel.resetName()}"
                 android:text="@{shopItem.name}"
                 android:hint="@string/product_edit_text_hint" />
+             
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -42,11 +46,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             getErrorByChangedCount="@{viewModel.errorCount}"
-            app:layout_constraintBottom_toTopOf="@id/buttonSave"
-            app:layout_constraintTop_toBottomOf="@id/text_il1">
+            getErrorByChangedCount="@{viewModel.errorCount}">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/EDtext_2"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 onChangeListener="@{()->viewModel.resetCount()}"

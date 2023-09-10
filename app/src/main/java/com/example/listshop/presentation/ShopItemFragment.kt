@@ -29,10 +29,13 @@ class ShopItemFragment : Fragment() {
             "ShopItemFragmentBinding == null"
         )
 
+    private var _binding: FragmentShopItemBinding? = null
+    private val binding: FragmentShopItemBinding
+        get() = _binding ?: throw RuntimeException("FragmentShopItemBinding == true")
 
     private lateinit var onShopItemFinishedListener: OnFinishedListener
 
-
+    //СВЯЗЬ ФРАГМЕНТА С АКТИВНОСТИ
     //onAttach вызывается в момент прикреления фрагмента к активити
     //context - это наша активити и зкоторой он был вызван
     //здесь проверяем реализует ли активити интерфейс,жизненно необходимый данному фрагменту
@@ -52,7 +55,11 @@ class ShopItemFragment : Fragment() {
     ): View {
 
 
+        
+
+
         _binding = FragmentShopItemBinding.inflate(inflater, container, false)
+
 
         return binding.root
     }
@@ -60,6 +67,7 @@ class ShopItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         parseIntent()
         viewModel = ViewModelProvider(this)[ShopItemActivityViewModel::class.java]
@@ -74,11 +82,11 @@ class ShopItemFragment : Fragment() {
 
 
     private fun launchEditMode() {
+
         viewModel.getShopItem(shopItemID)
         viewModel.shopitem.observe(viewLifecycleOwner) {
             binding.shopItem = it
         }
-
 
         binding.buttonSave.setOnClickListener {
             viewModel.editShopItem(
@@ -98,6 +106,8 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun observableEvents() {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.shouldClose.observe(viewLifecycleOwner) {
             onShopItemFinishedListener.finishedListener()
@@ -107,6 +117,7 @@ class ShopItemFragment : Fragment() {
     interface OnFinishedListener {
         fun finishedListener()
     }
+
 
     private fun parseIntent() {
 
@@ -160,5 +171,11 @@ class ShopItemFragment : Fragment() {
                 }
             }
         }
+    
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+
     }
 }

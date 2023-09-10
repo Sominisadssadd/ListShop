@@ -20,13 +20,17 @@ import com.example.listshop.domain.ShopItem
 class ListShopRecyclerView :
     ListAdapter<ShopItem, ListShopRecyclerView.ListShopViewHolder>(ShopListDiffCallBack()) {
 
+
     var ONShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var OnShopItemClikcListener: ((ShopItem) -> Unit)? = null
     var onShopItemSwipeAndDelete: ((ShopItem) -> Unit)? = null
 
 
     inner class ListShopViewHolder(val binding: ViewDataBinding) :
+
         RecyclerView.ViewHolder(binding.root)
+
+       
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListShopViewHolder {
         val layoutId = when (viewType) {
@@ -35,9 +39,11 @@ class ListShopRecyclerView :
             else -> throw RuntimeException("unknown ViewType $viewType")
         }
 
-        val inflater = LayoutInflater.from(parent.context)
+
+     
+        val layoutInflater = LayoutInflater.from(parent.context)
         val view = DataBindingUtil.inflate<ViewDataBinding>(
-            inflater,
+            layoutInflater,
             layoutId,
             parent,
             false
@@ -53,16 +59,17 @@ class ListShopRecyclerView :
         }
     }
 
-
     override fun onBindViewHolder(holder: ListShopViewHolder, position: Int) {
-        val item = getItem(position)
+
         val binding = holder.binding
-        with(holder) {
-            binding.root.setOnLongClickListener {
+        val item = getItem(position)
+        with(binding) {
+
+            root.setOnLongClickListener {
                 ONShopItemLongClickListener?.invoke(getItem(position))
                 true
             }
-            binding.root.setOnClickListener {
+            root.setOnClickListener {
                 OnShopItemClikcListener?.invoke(getItem(position))
             }
         }
