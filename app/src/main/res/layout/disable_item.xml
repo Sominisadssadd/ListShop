@@ -36,9 +36,11 @@
                     android:id="@+id/textViewName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{shopItem.name}"
                     android:textColor="#7C7C7C"
-                    android:textSize="22sp" />
+                    android:textSize="22sp"
+                    tools:text="@{shopItem.name}" />
+
+               
 
                 <TextView
                     android:id="@+id/textViewCount"
@@ -47,8 +49,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:textColor="#FF7C7C7C"
-                    android:textSize="24sp" />
+                    android:textColor="#FF7C7C7C"/>
+
+
 
             </LinearLayout>
 

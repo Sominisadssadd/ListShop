@@ -11,7 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
 import com.example.listshop.databinding.ActivityMainBinding
+
+import com.example.listshop.domain.ShopItem
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
 
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
@@ -20,18 +24,27 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
     private lateinit var viewModel: MainViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var recAdapter: ListShopRecyclerView
+
+    
     private lateinit var binding: ActivityMainBinding
+
+
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
+        
+
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         setupRecyclerView()
-
+        
 
         viewModel.getShopList().observe(this) {
             recAdapter.submitList(it)
@@ -39,7 +52,9 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
 
 
         binding.addShopItemButton.setOnClickListener {
+
             if (binding.fragmentContainerL != null) {
+
                 launchShopItemFragment(ShopItemFragment.newFragmentAdd())
             } else {
                 val intentADD = ShopItemActivity.newIntentAdd(this@MainActivity)

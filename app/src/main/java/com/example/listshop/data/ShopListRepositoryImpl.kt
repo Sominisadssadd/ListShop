@@ -1,62 +1,52 @@
 package com.example.listshop.data
 
+import android.app.Application
+import android.view.animation.Transformation
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.example.listshop.domain.ShopItem
 import com.example.listshop.domain.ShopListRepository
 import kotlin.random.Random
 
-object ShopListRepositoryImpl : ShopListRepository {
-
-    private val shopList = MutableLiveData<List<ShopItem>>()
-    private val mutableShopList = sortedSetOf<ShopItem>({it1,it2-> it1.id.compareTo(it2.id)})
-
+class ShopListRepositoryImpl(
+    application: Application
+) : ShopListRepository {
 
 
-    init {
-        for(i in 0 until 1000){
-            val item = ShopItem("some stuff $i", i, Random.nextBoolean())
-            addShopListItem(item)
-        }
+    private val shopListDB = ShopListDatabase.getInstance(application)
+    private val shopListDao = shopListDB.getShopListDao()
+    private val mapper = ShopListMapper()
+
+    override suspend fun addShopListItem(shopItem: ShopItem) {
+        shopListDao.addShopItem(mapper.shopItemToShopItemDB(shopItem))
     }
 
-    private var autoIncrementId = 0
-
-    private fun updateShopList() {
-        shopList.value = mutableShopList.toList()
+    override suspend fun editShopListItem(shopItem: ShopItem) {
+        //Мы доабавляем в редактировании потому что у нас в Insert указанно
+        //onConflict = replace
+        shopListDao.addShopItem(mapper.shopItemToShopItemDB(shopItem))
     }
 
-    override fun addShopListItem(shopItem: ShopItem) {
-
-        if (shopItem.id == ShopItem.UNDEFINED_ID) {
-            shopItem.id = autoIncrementId++
-        }
-        mutableShopList.add(shopItem)
-        updateShopList()
+    override suspend fun removeShopListItem(shopItem: ShopItem) {
+        shopListDao.deleteShopItem(shopItem.id)
     }
 
-    override fun editShopListItem(shopItem: ShopItem) {
-        val oldShopItem = getShopListItem(shopItem.id)
-        mutableShopList.remove(oldShopItem)
-        addShopListItem(shopItem)
-        updateShopList()
-    }
-
-    override fun removeShopListItem(shopItem: ShopItem) {
-        mutableShopList.remove(shopItem)
-        updateShopList()
-    }
-
-    override fun getShopListItem(id: Int): ShopItem {
+    override suspend fun getShopListItem(id: Int): ShopItem {
 
         //можно сделать возвращаемый тип нулабельным, либо просто бросить исключение
-        return mutableShopList.find { it.id == id }
-            ?: throw RuntimeException("element with $id id not founded")
+        val element = shopListDao.getShopItem(id)
+        return mapper.shopItemDBtoShopItem(element)
 
     }
 
 
-    override fun getShopList(): LiveData<List<ShopItem>> {
-        return shopList
+    override fun getShopList(): LiveData<List<ShopItem>> = MediatorLiveData<List<ShopItem>>().apply{
+        addSource(shopListDao.getListShopItems()){
+            value = mapper.shopEntityListToShopItemList(it)
+        }
     }
+
+
 }

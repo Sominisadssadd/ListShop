@@ -19,9 +19,15 @@ import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment : Fragment() {
 
+
     private var screenMode = UNDEFINED_SCREEN_MODE
     private var shopItemID = UNDEFINED_SHOP_ITEM_ID
     private lateinit var viewModel: ShopItemActivityViewModel
+    private var _binding: FragmentShopItemBinding? = null
+    private val binding: FragmentShopItemBinding
+        get() = _binding ?: throw RuntimeException(
+            "ShopItemFragmentBinding == null"
+        )
 
     private var _binding: FragmentShopItemBinding? = null
     private val binding: FragmentShopItemBinding
@@ -49,10 +55,11 @@ class ShopItemFragment : Fragment() {
     ): View {
 
 
-        //let выполнится только в том случае, если обьект от которого вызвана функция не null
-        //что позволяет избежать проверки на null
+        
+
 
         _binding = FragmentShopItemBinding.inflate(inflater, container, false)
+
 
         return binding.root
     }
@@ -75,8 +82,12 @@ class ShopItemFragment : Fragment() {
 
 
     private fun launchEditMode() {
-        val shopItem = viewModel.getShopItem(shopItemID)
-        binding.shopItem = shopItem
+
+        viewModel.getShopItem(shopItemID)
+        viewModel.shopitem.observe(viewLifecycleOwner) {
+            binding.shopItem = it
+        }
+
         binding.buttonSave.setOnClickListener {
             viewModel.editShopItem(
                 shopItemID,
@@ -129,6 +140,12 @@ class ShopItemFragment : Fragment() {
         }
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         private const val UNDEFINED_SCREEN_MODE = ""
         private const val UNDEFINED_SHOP_ITEM_ID = -1
@@ -154,12 +171,11 @@ class ShopItemFragment : Fragment() {
                 }
             }
         }
-    }
+    
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
-
-
 }

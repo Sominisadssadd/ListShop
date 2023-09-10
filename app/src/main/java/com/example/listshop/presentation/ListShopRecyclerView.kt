@@ -20,15 +20,6 @@ import com.example.listshop.domain.ShopItem
 class ListShopRecyclerView :
     ListAdapter<ShopItem, ListShopRecyclerView.ListShopViewHolder>(ShopListDiffCallBack()) {
 
-//    var listShop = listOf<ShopItem>()
-//        set(value) {
-//            //почему реализация с diffUtils не самая удачная? Потому, что метод
-//            //calculateDiff выполняет все вычисления в главном потоке(Может тормозить)
-//            //var diffCallBack = ShopListDiffCallBack(listShop, value)
-//            //var calc = DiffUtil.calculateDiff(diffCallBack)
-//            //calc.dispatchUpdatesTo(this)
-//            field = value
-//        }
 
     var ONShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var OnShopItemClikcListener: ((ShopItem) -> Unit)? = null
@@ -36,17 +27,20 @@ class ListShopRecyclerView :
 
 
     inner class ListShopViewHolder(val binding: ViewDataBinding) :
-        RecyclerView.ViewHolder(binding.root) {
 
-    }
+        RecyclerView.ViewHolder(binding.root)
+
+       
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListShopViewHolder {
-        var layoutId = when (viewType) {
+        val layoutId = when (viewType) {
             ABLE_ITEM -> R.layout.able_item
             DISABLE_ITEM -> R.layout.disable_item
             else -> throw RuntimeException("unknown ViewType $viewType")
         }
 
+
+     
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = DataBindingUtil.inflate<ViewDataBinding>(
             layoutInflater,
@@ -79,11 +73,13 @@ class ListShopRecyclerView :
                 OnShopItemClikcListener?.invoke(getItem(position))
             }
         }
+
         when (binding) {
             is AbleItemBinding -> binding.shopItem = item
             is DisableItemBinding -> binding.shopItem = item
             else -> throw RuntimeException("Unknown ViewDataBinding type")
         }
+
     }
 
     fun removeShopItemElements(shopItem: ShopItem) {
