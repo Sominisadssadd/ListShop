@@ -1,6 +1,8 @@
 package com.example.listshop.domain
 
-class UseCaseGetShopItem(private val shopListRepository: ShopListRepository) {
+import javax.inject.Inject
+
+class UseCaseGetShopItem @Inject constructor( val shopListRepository: ShopListRepository) {
 
     suspend fun getShopItem(id: Int): ShopItem {
         return shopListRepository.getShopListItem(id)

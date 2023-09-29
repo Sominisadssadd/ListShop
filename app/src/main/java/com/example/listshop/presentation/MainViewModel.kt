@@ -2,7 +2,6 @@ package com.example.listshop.presentation
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.listshop.data.ShopListRepositoryImpl
 import com.example.listshop.domain.ShopItem
 import com.example.listshop.domain.UseCaseEditShopItem
 import com.example.listshop.domain.UseCaseGetShopItemList
@@ -11,15 +10,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel @Inject constructor(
+    application: Application,
+    val getShopListUseCase: UseCaseGetShopItemList,
+    val editShopItemUseCase: UseCaseEditShopItem,
+    val removeShopItemUseCase: UseCaseRemoveShopItem
 
-
-    private val repository = ShopListRepositoryImpl(application)
-
-    private val getShopListUseCase = UseCaseGetShopItemList(repository)
-    private val editShopItemUseCase = UseCaseEditShopItem(repository)
-    private val removeShopItemUseCase = UseCaseRemoveShopItem(repository)
+) : AndroidViewModel(application) {
 
 
     fun getShopList(): LiveData<List<ShopItem>> {
