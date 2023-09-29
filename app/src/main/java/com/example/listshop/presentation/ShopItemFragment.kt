@@ -23,15 +23,14 @@ class ShopItemFragment : Fragment() {
     private var screenMode = UNDEFINED_SCREEN_MODE
     private var shopItemID = UNDEFINED_SHOP_ITEM_ID
     private lateinit var viewModel: ShopItemActivityViewModel
+
     private var _binding: FragmentShopItemBinding? = null
+
     private val binding: FragmentShopItemBinding
         get() = _binding ?: throw RuntimeException(
             "ShopItemFragmentBinding == null"
         )
 
-    private var _binding: FragmentShopItemBinding? = null
-    private val binding: FragmentShopItemBinding
-        get() = _binding ?: throw RuntimeException("FragmentShopItemBinding == true")
 
     private lateinit var onShopItemFinishedListener: OnFinishedListener
 
@@ -53,9 +52,6 @@ class ShopItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
-        
 
 
         _binding = FragmentShopItemBinding.inflate(inflater, container, false)
@@ -171,11 +167,8 @@ class ShopItemFragment : Fragment() {
                 }
             }
         }
-    
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
 
     }
+
+
 }

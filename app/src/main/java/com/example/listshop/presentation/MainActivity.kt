@@ -1,5 +1,6 @@
 package com.example.listshop.presentation
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
     private lateinit var recAdapter: ListShopRecyclerView
 
     
-    private lateinit var binding: ActivityMainBinding
+
 
 
     private val binding by lazy {
@@ -62,6 +63,16 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
 
             }
         }
+
+        contentResolver.query(
+            Uri.parse("content://com.example.listshop/shop_items"),
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
     }
 
 
