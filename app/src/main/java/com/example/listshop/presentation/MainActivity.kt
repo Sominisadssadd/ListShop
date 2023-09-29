@@ -17,35 +17,36 @@ import com.example.listshop.domain.ShopItem
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
 
 
-    private lateinit var viewModel: MainViewModel
+    @Inject
+    lateinit var viewModel: MainViewModel
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var recAdapter: ListShopRecyclerView
-
-    
-
 
 
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private val component by lazy {
+        (application as ShopListApplication).component
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
 
         setContentView(binding.root)
-        
-
-
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         setupRecyclerView()
-        
+
 
         viewModel.getShopList().observe(this) {
             recAdapter.submitList(it)

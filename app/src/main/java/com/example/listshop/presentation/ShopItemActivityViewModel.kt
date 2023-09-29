@@ -9,15 +9,14 @@ import com.example.listshop.domain.UseCaseEditShopItem
 import com.example.listshop.domain.UseCaseGetShopItem
 import kotlinx.coroutines.*
 import java.lang.Exception
+import javax.inject.Inject
 
-class ShopItemActivityViewModel(application: Application) : AndroidViewModel(application) {
-
-    val repository = ShopListRepositoryImpl(application)
-
-    val addShopItem = UseCaseAddShopItem(repository)
-    val editShopItem = UseCaseEditShopItem(repository)
-    val getShopItem = UseCaseGetShopItem(repository)
-
+class ShopItemActivityViewModel @Inject constructor(
+    application: Application,
+    val addShopItem: UseCaseAddShopItem,
+    val editShopItem: UseCaseEditShopItem,
+    val getShopItem: UseCaseGetShopItem
+) : AndroidViewModel(application) {
 
     private val _errorName = MutableLiveData<Boolean>()
     val errorName: LiveData<Boolean>

@@ -8,13 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.example.listshop.domain.ShopItem
 import com.example.listshop.domain.ShopListRepository
+import javax.inject.Inject
 import kotlin.random.Random
 
-class ShopListRepositoryImpl(
+class ShopListRepositoryImpl @Inject constructor(
     application: Application
 ) : ShopListRepository {
 
-
+    //Посмотреть
     private val shopListDB = ShopListDatabase.getInstance(application)
     private val shopListDao = shopListDB.getShopListDao()
     private val mapper = ShopListMapper()
@@ -24,8 +25,6 @@ class ShopListRepositoryImpl(
     }
 
     override suspend fun editShopListItem(shopItem: ShopItem) {
-        //Мы доабавляем в редактировании потому что у нас в Insert указанно
-        //onConflict = replace
         shopListDao.addShopItem(mapper.shopItemToShopItemDB(shopItem))
     }
 
@@ -35,7 +34,6 @@ class ShopListRepositoryImpl(
 
     override suspend fun getShopListItem(id: Int): ShopItem {
 
-        //можно сделать возвращаемый тип нулабельным, либо просто бросить исключение
         val element = shopListDao.getShopItem(id)
         return mapper.shopItemDBtoShopItem(element)
 

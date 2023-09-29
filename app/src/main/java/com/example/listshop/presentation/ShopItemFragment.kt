@@ -16,13 +16,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.listshop.R
 import com.example.listshop.databinding.FragmentShopItemBinding
 import com.google.android.material.textfield.TextInputLayout
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
 
 
     private var screenMode = UNDEFINED_SCREEN_MODE
     private var shopItemID = UNDEFINED_SHOP_ITEM_ID
-    private lateinit var viewModel: ShopItemActivityViewModel
+
+    @Inject
+    lateinit var viewModel: ShopItemActivityViewModel
 
     private var _binding: FragmentShopItemBinding? = null
 
@@ -47,12 +50,21 @@ class ShopItemFragment : Fragment() {
         }
     }
 
+
+    private val component by lazy {
+        (requireActivity().application as ShopListApplication).component
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
 
         _binding = FragmentShopItemBinding.inflate(inflater, container, false)
 
@@ -66,7 +78,6 @@ class ShopItemFragment : Fragment() {
 
 
         parseIntent()
-        viewModel = ViewModelProvider(this)[ShopItemActivityViewModel::class.java]
         when (screenMode) {
             MODE_EDIT -> launchEditMode()
             MODE_ADD -> launchAddMode()
