@@ -1,7 +1,9 @@
 package com.example.listshop.presentation
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.listshop.R
 import com.example.listshop.databinding.FragmentShopItemBinding
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class ShopItemFragment : Fragment() {
 
@@ -106,9 +112,11 @@ class ShopItemFragment : Fragment() {
 
     private fun launchAddMode() {
         binding.buttonSave.setOnClickListener {
+
             val name = binding.EDtext1.text.toString()
             val count = binding.EDtext2.text.toString()
             viewModel.addShopItem(name, count)
+
         }
     }
 

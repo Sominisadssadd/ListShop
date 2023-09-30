@@ -2,6 +2,7 @@ package com.example.listshop.di
 
 import android.app.Activity
 import android.app.Application
+import com.example.listshop.data.ShopListProvider
 import com.example.listshop.di.modules.DataModule
 import com.example.listshop.di.modules.DomainModule
 import com.example.listshop.presentation.MainActivity
@@ -17,6 +18,8 @@ interface ApplicationComponent {
     fun inject(activity: MainActivity)
 
     fun inject(fragment: ShopItemFragment)
+
+    fun inject(provider: ShopListProvider)
 
     @Component.Factory
     interface ApplicationComponentFactory {

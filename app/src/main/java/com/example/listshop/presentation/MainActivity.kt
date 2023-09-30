@@ -11,12 +11,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listshop.R
+import com.example.listshop.data.ShopItemDbModel
 import com.example.listshop.databinding.ActivityMainBinding
 
 import com.example.listshop.domain.ShopItem
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -64,15 +67,6 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedListener {
 
             }
         }
-
-        contentResolver.query(
-            Uri.parse("content://com.example.listshop/shop_items"),
-            null,
-            null,
-            null,
-            null,
-            null
-        )
 
     }
 
