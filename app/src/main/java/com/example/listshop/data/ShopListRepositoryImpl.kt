@@ -12,13 +12,11 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 class ShopListRepositoryImpl @Inject constructor(
-    application: Application
+    val shopListDao: ShopListDao,
+    val mapper : ShopListMapper
 ) : ShopListRepository {
 
-    //Посмотреть
-    private val shopListDB = ShopListDatabase.getInstance(application)
-    private val shopListDao = shopListDB.getShopListDao()
-    private val mapper = ShopListMapper()
+
 
     override suspend fun addShopListItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.shopItemToShopItemDB(shopItem))
@@ -40,11 +38,12 @@ class ShopListRepositoryImpl @Inject constructor(
     }
 
 
-    override fun getShopList(): LiveData<List<ShopItem>> = MediatorLiveData<List<ShopItem>>().apply{
-        addSource(shopListDao.getListShopItems()){
-            value = mapper.shopEntityListToShopItemList(it)
+    override fun getShopList(): LiveData<List<ShopItem>> =
+        MediatorLiveData<List<ShopItem>>().apply {
+            addSource(shopListDao.getListShopItems()) {
+                value = mapper.shopEntityListToShopItemList(it)
+            }
         }
-    }
 
 
 }

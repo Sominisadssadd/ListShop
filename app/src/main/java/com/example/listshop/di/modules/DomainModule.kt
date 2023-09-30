@@ -24,5 +24,4 @@ class DomainModule {
     @Provides
     fun provideUseCaseRemoveShopItem(repository: ShopListRepository) = UseCaseRemoveShopItem(repository)
 
-
 }
